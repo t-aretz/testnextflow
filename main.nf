@@ -4,11 +4,13 @@ process myProcess {
     input:
     val label from params.labels
 
-    echo "Running task ${label}"
-    script:
+    output:
+    file "output_${label}.txt"
+
     """
-    # Add your actual processing commands here
+    echo "Running task ${label}"
     sleep 10
+    touch output_${label}.txt
     """
 }
 
