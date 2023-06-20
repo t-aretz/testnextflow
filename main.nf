@@ -1,40 +1,25 @@
-/*
- * Split a fasta file into multiple files
- */
-process splitSequences {
- 
-    input:
-    path 'input.fa'
- 
-    output:
-    path 'seq_*'
- 
-    """
-    awk '/^>/{f="seq_"++d} {print > f}' < input.fa
-    """
+params.str = 'Hello world!'
+
+process splitLetters {
+  output:
+    path 'chunk_*'
+
+  """
+  printf '${params.str}' | split -b 6 - chunk_
+  """
 }
- 
-/*
- * Reverse the sequences
- */
-process reverse {
- 
-    input:
+
+process convertToUpper {
+  input:
     path x
- 
-    output:
+  output:
     stdout
- 
-    """
-    cat $x | rev
-    """
+
+  """
+  cat $x | tr '[a-z]' '[A-Z]'
+  """
 }
- 
-/*
- * Define the workflow
- */
+
 workflow {
-    splitSequences(params.in) \
-      | reverse \
-      | view
+  splitLetters | flatten | convertToUpper | view { it.trim() }
 }
