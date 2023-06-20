@@ -1,21 +1,40 @@
-params.labels = ['A', 'B', 'C', 'D']
-
-process myProcess {
+/*
+ * Split a fasta file into multiple files
+ */
+process splitSequences {
+ 
     input:
-    val label from params.labels
-
+    path 'input.fa'
+ 
     output:
-    file "output_${label}.txt"
-
+    path 'seq_*'
+ 
     """
-    echo "Running task ${label}"
-    sleep 10
-    touch output_${label}.txt
+    awk '/^>/{f="seq_"++d} {print > f}' < input.fa
     """
 }
-
+ 
+/*
+ * Reverse the sequences
+ */
+process reverse {
+ 
+    input:
+    path x
+ 
+    output:
+    stdout
+ 
+    """
+    cat $x | rev
+    """
+}
+ 
+/*
+ * Define the workflow
+ */
 workflow {
-    scatter (label in params.labels) {
-        myProcess(label)
-    }
+    splitSequences(params.in) \
+      | reverse \
+      | view
 }
