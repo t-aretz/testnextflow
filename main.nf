@@ -1,28 +1,12 @@
 process sayHello {
-    container 'alpine'
-    executor 'kuberun'
-
-    pod {
-        nodeAffinity {
-            requiredDuringSchedulingIgnoredDuringExecution {
-                nodeSelectorTerms {
-                    with {
-                        matchExpressions {
-                            key 'kubernetes.io/hostname'
-                            operator 'In'
-                            values ' hu-worker-c27'
-                        }
-                    }
-                }
-            }
-        }
-    }
+    output:
+        stdout
 
     """
-    echo 'Hello world!' 
+    printf 'Hello world!' 
     """
 }
 
 workflow {
-  sayHello()
+    sayHello | view
 }
