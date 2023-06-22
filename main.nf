@@ -1,5 +1,5 @@
 process sayHello {
-    container 'your-container-image'
+    container 'alpine'
     executor 'kuberun'
 
     pod {
