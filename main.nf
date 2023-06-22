@@ -1,5 +1,4 @@
 process sayHello {
-process myTask {
     container 'your-container-image'
     executor 'kuberun'
 
